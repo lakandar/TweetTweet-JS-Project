@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tweet Tweet</title>
+    <style>
+        .edit-item {
+            margin-right: 0.7rem;
+            cursor: pointer;
+        }
+    
+        .delete-item {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 text-center pt-4">
+                <h3>Tweet Tweet - Challenge Project-2</h3>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 mb-3">
+                <input class="form-control float-end" id="search" style="width: 13rem;" type="text" placeholder="Search Tweet..." aria-label="Search">
+            </div>
+        </div>
+        <div class="row mx-auto  justify-content-between">
+            <div class="col-12 col-sm-12 col-md-5 border border-1 border-warning p-2 mb-2 me-1">
+                <!-- <input type="text" placeholder="type Tweet text..." class="form-control tweet-txt"> -->
+                <textarea class="form-control" placeholder="type Tweet here..." id="floatingTextarea2" style="height: 100px"></textarea>
+                <span class="txt-count float-start">0/250</span><br>
+                <button class="btn mt-3 btn-block btn-info float-end submit">Submit</button>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 border border-1 border-info p-2">
+                <ul class="list-group collection-item list-group-numbered">
+                    <li class="list-group-item collection-item tweet-id">
+                        <strong>Tweet 1</strong>- <span class="tweet-txt">Tweet Text</span>
+                        <i class="fa fa-trash float-end delete-item"></i>
+                        <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>
+                    </li>
+                    <li class="list-group-item collection-item tweet-id">
+                        <strong>Tweet 2</strong>- <span class="tweet-txt">Tweet Text</span>
+                        <i class="fa fa-trash float-end delete-item"></i>
+                        <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <span class="float-end mt-5" style="font-size: 10px;">Prepared by <em>Abu Hasan</em></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
