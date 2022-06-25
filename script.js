@@ -5,19 +5,28 @@ let txtCountElement=document.querySelector(".txt-count");
 let searchElement=document.querySelector("#search");
 
 let tweetArr=[];
-let idArr=[];
 
-function generateID(){
-    let id=0;
-    for(let i=1; i<=100; i++){
-        idArr.push(i)
-    }
-    return idArr
+let t=[];
+for(let i=4; i<=100; i++){
+    t.push(i);
 }
+
+let localIdArr=[1, 2, 3, ...t];    
+
+if(!localStorage.getItem("localIDKey")){
+    let tempArr=[];
+    tempArr.push(localIdArr)
+    localStorage.setItem("localIDKey", tempArr);
+}
+let getIdFromLocalStorage=localStorage.getItem("localIDKey");
+let x=getIdFromLocalStorage.split(",").map(str=>Number(str));
+let y=localIdArr.filter(id=>(x).includes(id));
+
+// console.log(y);
 
 function addTweetToUI(id, txt, date){
     let liElement=`<li class="list-group-item collection-item tweet-id">
-    <strong class="text-info">Tweet ${id}</strong> - <span class="tweet-txt text-info">${txt}</span>
+    <strong class="text-info">◉ Tweet ${id}</strong> - <span class="tweet-txt text-info">${txt}</span>
     <span class="date-item border bg-opacity-25 border-info bg-info">${date}</span>
     <i class="fa fa-trash float-end delete-item"></i>
     <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>    
@@ -44,23 +53,6 @@ function addTweetToLocalStore(tArr){
     }
 }
 
-//id
-function tweetId(idArray){
-    let localIdArr=[];
-    
-    if(localStorage.getItem("localIDKey")){
-        localIdArr=localStorage.getItem("localIDKey");
-        localIdArr=idArray;
-        localStorage.setItem("localIDKey", localIdArr);
-    }
-    else{
-        //let localArr=[];
-        localIdArr=idArray;
-        //update to local storage
-        localStorage.setItem("localIDKey", localIdArr);
-    }
-    return localIdArr;
-}
 
 //localStorage to UI
 function showTweetToUI(tArr){
@@ -69,7 +61,7 @@ function showTweetToUI(tArr){
     tArr.forEach(element => {
         //console.log(element.id)
         let liElement=`<li class="list-group-item collection-item tweet-id">
-        <strong class="text-info">Tweet ${element.id}</strong> - <span class="tweet-txt text-info">${element.txt}</span>
+        <strong class="text-info">◉ Tweet ${element.id}</strong> - <span class="tweet-txt text-info">${element.txt}</span>
         <span class="date-item border bg-opacity-25 border-info bg-info">${element.date}</span>
         <i class="fa fa-trash float-end delete-item"></i>
         <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>    
@@ -84,10 +76,15 @@ submitBtnElement.addEventListener("click", e=>{
     let inputTxt=inputElement.value;
     let inputDate=new Date().toString().substring(4,21);
     
-    generateID();
+    // generateID();
     
-    let inputID=idArr.shift();
-    
+    let inputID;
+    if(localStorage.getItem("localIDKey")){
+        
+        inputID=y.shift();
+        //update localStorage ID
+        localStorage.setItem("localIDKey", y);
+    } 
     
     let tweetEleArr={
         id: inputID,
@@ -101,7 +98,7 @@ submitBtnElement.addEventListener("click", e=>{
         //add Tweet to Local Store
         addTweetToLocalStore(tweetEleArr);
 
-        tweetId(idArr);
+        //tweetId(idArr);
         
         //console.log(x);
 
@@ -110,13 +107,11 @@ submitBtnElement.addEventListener("click", e=>{
         txtCountElement.textContent=0;
 })
 
+
 //input counter
 inputElement.addEventListener("input", (e)=>{
     let inputTexCount=inputElement.value.length
-    txtCountElement.textContent=inputTexCount;
-    // if(inputTexCount===251){
-    //     alert("Please Tweet within 250 Characters!!!")
-    // }    
+    txtCountElement.textContent=inputTexCount;   
 })
 
 //LocalStorage Tweet to UI
