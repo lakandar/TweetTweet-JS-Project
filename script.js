@@ -25,11 +25,11 @@ let y=localIdArr.filter(id=>(x).includes(id));
 // console.log(y);
 
 function addTweetToUI(id, txt, date){
-    let liElement=`<li class="list-group-item collection-item tweet-id">
+    let liElement=`<li class="list-group-item overflow-hidden collection-item tweet-${id}">
     <strong class="text-info">◉ Tweet ${id}</strong> - <span class="tweet-txt text-info">${txt}</span>
     <span class="date-item border bg-opacity-25 border-info bg-info">${date}</span>
-    <i class="fa fa-trash float-end delete-item"></i>
-    <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>    
+    <i class="fa fa-trash float-end delete-tweet"></i>
+    <i class="fa fa-pencil float-end edit-tweet pe-4"></i>    
     </li>`
 
     ulListElement.insertAdjacentHTML('afterbegin', liElement);
@@ -58,19 +58,46 @@ function addTweetToLocalStore(tArr){
 function showTweetToUI(tArr){
     ulListElement.innerHTML="";
     
+    //sort by id list to UI
+    tArr.sort((a, b) => a.id-b.id);
+
     tArr.forEach(element => {
         //console.log(element.id)
-        let liElement=`<li class="list-group-item collection-item tweet-id">
+        let liElement=`<li class="list-group-item overflow-hidden collection-item tweet-${element.id}">
         <strong class="text-info">◉ Tweet ${element.id}</strong> - <span class="tweet-txt text-info">${element.txt}</span>
         <span class="date-item border bg-opacity-25 border-info bg-info">${element.date}</span>
-        <i class="fa fa-trash float-end delete-item"></i>
-        <i class="fa fa-pencil-alt float-end edit-item pe-4"></i>    
+        <i class="fa fa-trash float-end delete-tweet"></i>
+        <i class="fa fa-pencil float-end edit-tweet pe-4"></i>    
         </li>`
 
         ulListElement.insertAdjacentHTML('afterbegin', liElement);
     });
 }
 
+function getTweetId(target){
+    return Number(target.parentElement.classList[3].split("-")[1]);
+}
+
+function deleteTweetFromUI(id){
+    document.querySelector(`.tweet-${id}`).remove();
+}
+
+function deleteTweetFromDataStore(id){
+    tweetArr=tweetArr.filter(t=>t.id!==id);
+}
+
+function deleteTweetFromLocalStore(id){
+    //pick from local store
+    let getTweet=JSON.parse(localStorage.getItem("localTweetKey"))
+    //filter data
+    let fArr=getTweet.filter(t=>t.id!==id);
+    //update LocalStore Array
+    localStorage.setItem("localTweetKey", JSON.stringify(fArr));
+    //update localStorage ID
+    y.unshift(id);
+    y.sort((a,b)=>a-b);
+    localStorage.setItem("localIDKey", y)
+}
 
 submitBtnElement.addEventListener("click", e=>{
     let inputTxt=inputElement.value;
@@ -91,8 +118,9 @@ submitBtnElement.addEventListener("click", e=>{
         txt: inputTxt,
         date: inputDate
         }
+            
         //add Tweet to Data Store
-        tweetArr.push(tweetEleArr);        
+        tweetArr.push(tweetEleArr);  
         //Add Tweet to UI
         addTweetToUI(inputID, inputTxt, inputDate);
         //add Tweet to Local Store
@@ -130,5 +158,19 @@ searchElement.addEventListener("keyup", e=>{
         tweet.txt.includes(searchValue));
     //show to UI
     showTweetToUI(searchArr);
+})
+
+//Delete tweet
+ulListElement.addEventListener("click", e=>{
+    if(e.target.classList.contains('delete-tweet')){
+        let tId=getTweetId(e.target);
+
+        //delete from UI
+        deleteTweetFromUI(tId);
+        //delete from DataStore
+        deleteTweetFromDataStore(tId);
+        //delete from LocalStore
+        deleteTweetFromLocalStore(tId);
+    }
 })
 
