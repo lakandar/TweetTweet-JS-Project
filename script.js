@@ -3,6 +3,7 @@ let submitBtnElement=document.querySelector(".submit");
 let ulListElement=document.querySelector(".list-group");
 let txtCountElement=document.querySelector(".txt-count");
 let searchElement=document.querySelector("#search");
+let divBtnElement=document.querySelector(".tweet-button")
 
 let tweetArr=[];
 
@@ -99,9 +100,21 @@ function deleteTweetFromLocalStore(id){
     localStorage.setItem("localIDKey", y)
 }
 
+function showUpdateButton(){
+    let updateButton=`<button class="btn mt-3 btn-warning update-button" type="button">Update</button>`;
+    submitBtnElement.style.display='none';
+    divBtnElement.insertAdjacentHTML("beforeend", updateButton);
+}
+
+function updateTweetToLocalStorage(tweetArr){
+    if(localStorage.getItem("localTweetKey")){
+        localStorage.setItem("localTweetKey", JSON.stringify(tweetArr));
+    }
+}
+
 submitBtnElement.addEventListener("click", e=>{
     let inputTxt=inputElement.value;
-    let inputDate=new Date().toString().substring(4,21);
+    let inputDate=new Date().toString().substring(4,24);
     
     // generateID();
     
@@ -130,7 +143,7 @@ submitBtnElement.addEventListener("click", e=>{
         
         //console.log(x);
 
-        //Tweet Input area & Counter blank after submit
+        //(Reset-Input) Tweet Input area & Counter blank after submit
         inputElement.value="";
         txtCountElement.textContent=0;
 })
@@ -160,7 +173,9 @@ searchElement.addEventListener("keyup", e=>{
     showTweetToUI(searchArr);
 })
 
-//Delete tweet
+//Delete Tweet
+let tweetEditId;
+
 ulListElement.addEventListener("click", e=>{
     if(e.target.classList.contains('delete-tweet')){
         let tId=getTweetId(e.target);
@@ -172,5 +187,55 @@ ulListElement.addEventListener("click", e=>{
         //delete from LocalStore
         deleteTweetFromLocalStore(tId);
     }
+//Edit Tweet
+    else if(e.target.classList.contains('edit-tweet')){
+        //pick the id
+        tweetEditId=getTweetId(e.target);
+        //find the tweet
+        let fTweet=tweetArr.find(f=>f.id===tweetEditId);
+        //populate/set Tweet to UI for edit
+        inputElement.value=fTweet.txt;
+        fTweet.date=new Date().toString().substring(4,24);
+        //show update button
+        if(!document.querySelector(".update-button")){
+            showUpdateButton();
+        }
+    }
 })
+
+//Update tweet
+divBtnElement.addEventListener("click", e=>{
+    if(e.target.classList.contains("update-button")){
+        //pick the data from the text field
+        let inputTxt=inputElement.value;
+        let inputDate=new Date().toString().substring(4,24);
+        //updated data should be update to data store
+        tweetArr=tweetArr.map(t=>{
+            if(t.id===tweetEditId){
+                //text should be updated
+                return {
+                    id: t.id,
+                    txt: inputTxt,
+                    date: inputDate
+                }                
+            }
+            else{
+                return t;
+            }
+        })
+        //reset input
+        inputElement.value="";
+        txtCountElement.textContent=0;
+        //show submit button
+        submitBtnElement.style.display='block';
+        //hide update button
+        document.querySelector(".update-button").remove();
+        //update data should be update to UI
+        showTweetToUI(tweetArr);
+        //update data should be update to Local Storage
+        updateTweetToLocalStorage(tweetArr);
+    }
+})
+
+
 
